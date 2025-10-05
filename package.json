@@ -1,0 +1,37 @@
+{
+  "name": "inspora-backend",
+  "version": "1.0.0",
+  "description": "RESTful API for the Inspiration wall Inspora built with Node.js, Express, and MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SRsoz/inspora-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SRsoz/inspora-backend/issues"
+  },
+  "homepage": "https://github.com/SRsoz/inspora-backend#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
+  }
+}
