@@ -2,7 +2,7 @@
   "name": "inspora-backend",
   "version": "1.0.0",
   "description": "RESTful API for the Inspiration wall Inspora built with Node.js, Express, and MongoDB",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
@@ -12,21 +12,21 @@
     "type": "git",
     "url": "git+https://github.com/SRsoz/inspora-backend.git"
   },
-  "keywords": [],
+  "keywords": ["nodejs", "express", "mongodb", "jwt", "restapi"],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/SRsoz/inspora-backend/issues"
   },
   "homepage": "https://github.com/SRsoz/inspora-backend#readme",
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.0"
+    "mongoose": "^8.6.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
