@@ -5,6 +5,7 @@ import cors from "cors";
 
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import { errorHandler } from "./middleware/authMiddleware.js";
 
 dotenv.config();
 
@@ -30,10 +31,7 @@ app.use((req, res) => {
   res.status(404).json({ message: "Sorry, we couldn't find what you're looking for." });
 });
 
-app.use((err, req, res, next) => {
-  console.error("Server error:", err);
-  res.status(500).json({ message: "Oops! Something went wrong on our side. Please try again later." });
-});
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 
