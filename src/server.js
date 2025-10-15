@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
+import userRoutes from "./routes/userRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -13,12 +16,8 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"],
 }));
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("Connected to database"))
-.catch(err => console.error("Database connection error:", err));
+app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -36,7 +35,13 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Oops! Something went wrong on our side. Please try again later." });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 4000;
+
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+  console.log("Connected to database");
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+})
+.catch(err => console.error("Database connection error:", err));
