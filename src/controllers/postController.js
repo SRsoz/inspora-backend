@@ -14,8 +14,32 @@ export const createPost = async (req, res) => {
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate('userId', 'username');
-    res.status(200).json(posts);
+   const { title, tags, page = 1 } = req.query;
+    const limit = 25;
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+    if (title) {
+      filter.title = { $regex: title, $options: 'i' };
+    }
+    if (tags) {
+      const tagArray = tags.split(',').map(tag => tag.trim());
+      filter.tags = { $in: tagArray };
+    }
+
+    const totalPosts = await Post.countDocuments(filter);
+    const posts = await Post.find(filter)
+      .populate('userId', 'username')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      page: Number(page),
+      totalPages: Math.ceil(totalPosts / limit),
+      totalPosts,
+      posts,
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching posts', error: error.message });
   }
