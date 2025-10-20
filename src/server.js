@@ -5,6 +5,7 @@ import cors from "cors";
 
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import feedRoutes from "./routes/feedRoutes.js";
 import { errorHandler } from "./middleware/authMiddleware.js";
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(cors({
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/feed", feedRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({
