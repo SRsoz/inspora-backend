@@ -14,7 +14,7 @@ export const createPost = async (req, res) => {
 
 export const getPosts = async (req, res) => {
   try {
-   const { title, tags, page = 1 } = req.query;
+   const { title = "", tags = "", page = 1 } = req.query;
     const limit = 25;
     const skip = (page - 1) * limit;
 
