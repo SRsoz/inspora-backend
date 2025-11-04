@@ -4,21 +4,22 @@ import fetch from 'node-fetch';
 export const getFeed = async (req, res) => {
   try {
     const { title = '', tags = '', page = 1 } = req.query;
-    const limit = 25;
+    const limit = 30;
     const skip = (page - 1) * limit;
 
     const filter = {};
-    if (title) {
-      filter.title = { $regex: title, $options: 'i' };
-    }
+    if (title) filter.title = { $regex: title, $options: 'i' };
     if (tags) {
       const tagArray = tags.split(',').map(tag => tag.trim());
       filter.tags = { $in: tagArray };
     }
 
+    const totalUserPosts = await Post.countDocuments(filter);
     const userPosts = await Post.find(filter)
       .populate('userId', 'username')
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean();
 
     const formattedUserPosts = userPosts.map(p => ({
@@ -32,10 +33,11 @@ export const getFeed = async (req, res) => {
 
     const unsplashQuery = title || tags.split(',')[0] || 'inspiration';
     let unsplashImages = [];
+    let unsplashTotalPages = 1;
 
     try {
       const response = await fetch(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(unsplashQuery)}&per_page=${limit}`,
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(unsplashQuery)}&page=${page}&per_page=${limit}`,
         {
           headers: {
             Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
@@ -58,22 +60,27 @@ export const getFeed = async (req, res) => {
           source: 'unsplash'
         }));
       }
+
+      if (data.total_pages) unsplashTotalPages = data.total_pages;
+
     } catch (unsplashError) {
       console.error('Unsplash API error:', unsplashError.message);
     }
 
     const combinedFeed = [...formattedUserPosts, ...unsplashImages];
 
-    const total = combinedFeed.length;
-    const totalPages = Math.ceil(total / limit);
-    const paginatedFeed = combinedFeed.slice(skip, skip + limit);
+    const totalItems = totalUserPosts + (unsplashImages.length * unsplashTotalPages);
+    const totalPages = Math.max(
+      Math.ceil(totalUserPosts / limit),
+      unsplashTotalPages
+    );
 
     res.status(200).json({
       page: Number(page),
       totalPages,
-      totalItems: total,
+      totalItems,
       itemsPerPage: limit,
-      feed: paginatedFeed
+      feed: combinedFeed
     });
 
   } catch (error) {
